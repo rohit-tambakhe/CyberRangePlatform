@@ -1,0 +1,75 @@
+stages:
+  - test
+  - deploy_staging
+  - deploy_production
+  - destroy_infrastructure
+
+variables:
+  # Define OpenStack credentials as pipeline variables
+  OS_USERNAME: $OS_USERNAME
+  OS_PASSWORD: $OS_PASSWORD
+  OS_AUTH_URL: $OS_AUTH_URL
+  OS_PROJECT_NAME: $OS_PROJECT_NAME
+  OS_USER_DOMAIN_NAME: $OS_USER_DOMAIN_NAME
+  OS_PROJECT_DOMAIN_NAME: $OS_PROJECT_DOMAIN_NAME
+
+# Define caching to speed up future builds
+cache:
+  paths:
+    - pulumi/
+
+test:
+  stage: test
+  script:
+    - echo "Running tests..."
+    - python test.py
+
+deploy_staging:
+  stage: deploy_staging
+  script:
+    - pulumi login
+    - pulumi stack init pulumi-staging
+    - pulumi config set openstack:username $OS_USERNAME
+    - pulumi config set openstack:password $OS_PASSWORD
+    - pulumi config set openstack:authUrl $OS_AUTH_URL
+    - pulumi config set openstack:projectName $OS_PROJECT_NAME
+    - pulumi config set openstack:userDomainName $OS_USER_DOMAIN_NAME
+    - pulumi config set openstack:projectDomainName $OS_PROJECT_DOMAIN_NAME
+    - pulumi up --yes
+  environment:
+    name: staging
+  only:
+    - develop  # Deploy on pushes to the develop branch
+  dependencies:
+    - test
+
+deploy_production:
+  stage: deploy_production
+  script:
+    - pulumi login
+    - pulumi stack init pulumi-production
+    - pulumi config set openstack:username $OS_USERNAME
+    - pulumi config set openstack:password $OS_PASSWORD
+    - pulumi config set openstack:authUrl $OS_AUTH_URL
+    - pulumi config set openstack:projectName $OS_PROJECT_NAME
+    - pulumi config set openstack:userDomainName $OS_USER_DOMAIN_NAME
+    - pulumi config set openstack:projectDomainName $OS_PROJECT_DOMAIN_NAME
+    - pulumi up --yes
+  environment:
+    name: production
+  only:
+    - master  # Deploy on pushes to the master branch
+  dependencies:
+    - test
+
+destroy_infrastructure:
+  stage: destroy_infrastructure
+  script:
+    - pulumi login
+    - pulumi stack select pulumi-staging
+    - pulumi destroy --yes
+    - pulumi stack select pulumi-production
+    - pulumi destroy --yes
+  when: manual  # Requires manual confirmation for production destruction
+  only:
+    - master
