@@ -21,7 +21,7 @@ variables:
   script:
     - echo "Preparing environment..."
     - echo "$OPENSTACK_CREDENTIALS_JSON" > /path/to/openstack/credentials.json
-    - pulumi login --cloud-url https://openstack.example.com --config-passphrase secret-passphrase
+    - pulumi login --cloud-url https://openstack.tam-cyborg.com --config-passphrase secret-passphrase
   only:
     - master
 
