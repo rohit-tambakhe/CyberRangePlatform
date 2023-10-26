@@ -1,0 +1,136 @@
+stages:
+  - prepare
+  - deploy
+  - test
+  - cleanup
+
+variables:
+  OPENSTACK_CREDENTIALS_JSON: $OPENSTACK_CREDENTIALS_JSON
+  DEV_IMAGE_ID: $DEV_IMAGE_ID
+  DEV_FLAVOR_ID: $DEV_FLAVOR_ID
+  DEV_KEY_PAIR_NAME: $DEV_KEY_PAIR_NAME
+  STAGING_IMAGE_ID: $STAGING_IMAGE_ID
+  STAGING_FLAVOR_ID: $STAGING_FLAVOR_ID
+  STAGING_KEY_PAIR_NAME: $STAGING_KEY_PAIR_NAME
+  PRODUCTION_IMAGE_ID: $PRODUCTION_IMAGE_ID
+  PRODUCTION_FLAVOR_ID: $PRODUCTION_FLAVOR_ID
+  PRODUCTION_KEY_PAIR_NAME: $PRODUCTION_KEY_PAIR_NAME
+
+.prepare_template: &prepare_template
+  stage: prepare
+  script:
+    - echo "Preparing environment..."
+    - echo "$OPENSTACK_CREDENTIALS_JSON" > /path/to/openstack/credentials.json
+    - pulumi login --cloud-url https://openstack.example.com --config-passphrase secret-passphrase
+  only:
+    - master
+
+.deploy_template: &deploy_template
+  stage: deploy
+  script:
+    - echo "Deploying $ENVIRONMENT environment..."
+    - pulumi config set --path=image_id $IMAGE_ID
+    - pulumi config set --path=flavor_id $FLAVOR_ID
+    - pulumi config set --path=key_pair_name $KEY_PAIR_NAME
+    - pulumi up --stack openstack-$ENVIRONMENT --yes
+  only:
+    - branches@$BRANCH
+
+.test_template: &test_template
+  stage: test
+  script:
+    - echo "Running $ENVIRONMENT environment tests..."
+    # Add your environment-specific testing commands here
+  only:
+    - branches@$BRANCH
+  dependencies:
+    - deploy_$ENVIRONMENT
+
+.cleanup_template: &cleanup_template
+  stage: cleanup
+  script:
+    - echo "Cleaning up $ENVIRONMENT environment..."
+    - pulumi destroy --stack openstack-$ENVIRONMENT --yes
+  when: manual
+  only:
+    - master
+  dependencies:
+    - test_$ENVIRONMENT
+
+include:
+  - template: .prepare_template
+    variables:
+      - ENVIRONMENT: "dev"
+      - IMAGE_ID: $DEV_IMAGE_ID
+      - FLAVOR_ID: $DEV_FLAVOR_ID
+      - KEY_PAIR_NAME: $DEV_KEY_PAIR_NAME
+      - BRANCH: "development"
+
+  - template: .deploy_template
+    variables:
+      - ENVIRONMENT: "dev"
+      - IMAGE_ID: $DEV_IMAGE_ID
+      - FLAVOR_ID: $DEV_FLAVOR_ID
+      - KEY_PAIR_NAME: $DEV_KEY_PAIR_NAME
+      - BRANCH: "development"
+
+  - template: .test_template
+    variables:
+      - ENVIRONMENT: "dev"
+      - BRANCH: "development"
+
+  - template: .cleanup_template
+    variables:
+      - ENVIRONMENT: "dev"
+
+  - template: .prepare_template
+    variables:
+      - ENVIRONMENT: "staging"
+      - IMAGE_ID: $STAGING_IMAGE_ID
+      - FLAVOR_ID: $STAGING_FLAVOR_ID
+      - KEY_PAIR_NAME: $STAGING_KEY_PAIR_NAME
+      - BRANCH: "staging"
+
+  - template: .deploy_template
+    variables:
+      - ENVIRONMENT: "staging"
+      - IMAGE_ID: $STAGING_IMAGE_ID
+      - FLAVOR_ID: $STAGING_FLAVOR_ID
+      - KEY_PAIR_NAME: $STAGING_KEY_PAIR_NAME
+      - BRANCH: "staging"
+
+  - template: .test_template
+    variables:
+      - ENVIRONMENT: "staging"
+      - BRANCH: "staging"
+
+  - template: .cleanup_template
+    variables:
+      - ENVIRONMENT: "staging"
+
+  - template: .prepare_template
+    variables:
+      - ENVIRONMENT: "production"
+      - IMAGE_ID: $PRODUCTION_IMAGE_ID
+      - FLAVOR_ID: $PRODUCTION_FLAVOR_ID
+      - KEY_PAIR_NAME: $PRODUCTION_KEY_PAIR_NAME
+
+  - template: .deploy_template
+    variables:
+      - ENVIRONMENT: "production"
+      - IMAGE_ID: $PRODUCTION_IMAGE_ID
+      - FLAVOR_ID: $PRODUCTION_FLAVOR_ID
+      - KEY_PAIR_NAME: $PRODUCTION_KEY_PAIR_NAME
+
+  - template: .test_template
+    variables:
+      - ENVIRONMENT: "production"
+
+  - template: .cleanup_template
+    variables:
+      - ENVIRONMENT: "production"
+
+after_script:
+  - echo "Cleaning up environment..."
+  - pulumi logout --all
+  - rm -f /path/to/openstack/credentials.json
