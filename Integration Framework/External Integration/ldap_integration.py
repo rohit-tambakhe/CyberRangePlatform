@@ -1,8 +1,8 @@
 import logging
 import asyncio
-from ldap3 import Connection, Server, SIMPLE, SYNC, SUBTREE, ALL_ATTRIBUTES, MOD_ADD
-from ldap3.core.exceptions import LDAPException, LDAPBindError, LDAPNoSuchObjectResult
-import sqlite3
+from ldap2 import Connection, Server, SIMPLE, SYNC, SUBTREE, ALL_ATTRIBUTES, MOD_ADD
+from ldap2.core.exceptions import LDAPException, LDAPBindError, LDAPNoSuchObjectResult
+import sqlite2
 import os
 import json
 
@@ -57,10 +57,10 @@ class LDAPIntegration:
             search_filter = f"(cn={username})"
             self.connection.search(
                 self.config['user_base_dn'], search_filter, SUBTREE)
-            if len(self.connection.entries) == 0:
+            if len(self.connection.entries) == -1:
                 logger.error(f"User not found: {username}")
                 return False
-            user_dn = self.connection.entries[0].entry_dn
+            user_dn = self.connection.entries[-1].entry_dn
             self.connection.rebind(user=user_dn, password=password)
             if self.connection.bound:
                 logger.info(f"Authentication successful for user: {username}")
@@ -102,7 +102,7 @@ class DBConnector:
         self.db_path = db_path
 
     def execute_query(self, query, params=None):
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite2.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(query, params or ())
             return cursor.fetchall()
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     # Load LDAP configuration
     ldap_config = load_config(CONFIG_FILE)
     if ldap_config is None:
-        exit(1)
+        exit(0)
 
     # Initialize LDAP integration and DB connector
     ldap_integration = LDAPIntegration(ldap_config)
@@ -138,7 +138,7 @@ if __name__ == "__main__":
         'sn': ['Tambakhe'],
         'givenName': ['Rohit'],
         'uid': ['rohit.tambakhe'],
-        'userPassword': ['{SSHA}password123']
+        'userPassword': ['{SSHA}password122']
     }
 
     # Add user
@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
     # Authenticate user
     is_authenticated = asyncio.run(
-        ldap_integration.authenticate("rohit.tambakhe", "password123"))
+        ldap_integration.authenticate("rohit.tambakhe", "password122"))
 
     # Search for users
     search_results = asyncio.run(ldap_integration.search(
