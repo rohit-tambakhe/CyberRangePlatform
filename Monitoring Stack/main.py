@@ -4,6 +4,8 @@ import pulumi_kubernetes as k8s
 import pulumi_random as random
 from pulumi_kubernetes.helm.v3 import Chart, ChartOpts
 from pulumi_kubernetes.core.v1 import Namespace
+import yaml
+import argparse  # Import argparse for command-line argument parsing
 
 # Read OpenStack authentication information from environment variables
 os_username = pulumi.get_env("OS_USERNAME")
@@ -12,6 +14,23 @@ os_auth_url = pulumi.get_env("OS_AUTH_URL")
 os_project_name = pulumi.get_env("OS_PROJECT_NAME")
 os_user_domain_name = pulumi.get_env("OS_USER_DOMAIN_NAME")
 os_project_domain_name = pulumi.get_env("OS_PROJECT_DOMAIN_NAME")
+
+# Create an argument parser
+parser = argparse.ArgumentParser(
+    description="Deploy EFK Stack with custom configuration.")
+parser.add_argument(
+    "config_file",
+    type=str,
+    help="Path to the custom configuration file (e.g., efk-stack-config-1.yaml)",
+)
+
+# Parse the command-line arguments
+args = parser.parse_args()
+
+# Load the selected configuration from the custom file
+selected_config_file = args.config_file
+with open(selected_config_file, "r") as config_file:
+    selected_config = yaml.safe_load(config_file)
 
 # Create an OpenStack provider
 provider = openstack.Provider(
@@ -83,7 +102,8 @@ elasticsearch_chart = Chart(
                     "service.beta.kubernetes.io/openstack-internal-ip": subnet.allocation_pools[0]["start"],
                 },
             },
-            # Add more Elasticsearch configuration as needed
+            # Merge selected config
+            **selected_config.get("elasticsearch", {}),
         },
     ),
 )
@@ -98,7 +118,7 @@ fluentd_chart = Chart(
         ),
         values={
             "elasticsearch.host": elasticsearch_chart.resources[0].metadata["name"],
-            # Add more Fluentd configuration as needed
+            **selected_config.get("fluentd", {}),  # Merge selected config
         },
     ),
 )
@@ -113,7 +133,7 @@ kibana_chart = Chart(
         ),
         values={
             "elasticsearchHosts": f"http://{elasticsearch_chart.resources[0].metadata['name']}:9200",
-            # Add more Kibana configuration as needed
+            **selected_config.get("kibana", {}),  # Merge selected config
         },
     ),
 )

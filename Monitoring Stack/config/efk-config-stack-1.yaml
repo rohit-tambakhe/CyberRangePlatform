@@ -1,0 +1,31 @@
+elasticsearch:
+  clusterName: my-efk-cluster-1
+  nodeCount: 3
+  nodeResources:
+    requests:
+      memory: "4Gi"
+      cpu: "1"
+    limits:
+      memory: "8Gi"
+      cpu: "2"
+  storage:
+    size: "100Gi"
+    storageClassName: "standard"
+
+fluentd:
+  logLevel: info
+  flushInterval: "10s"
+  logFormat: json
+  filters:
+    - type: record_transformer
+      enable_ruby: true
+      <record>:
+        key: "custom_field"
+        value: "custom_value"
+
+kibana:
+  version: "7.10.0"
+  serverHost: "0.0.0.0"
+  elasticsearchHosts:
+    - "http://elasticsearch-service:9200"
+  customKibanaSetting: true
