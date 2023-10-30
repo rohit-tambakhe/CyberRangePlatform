@@ -1,6 +1,9 @@
 import logging
 import asyncio
-from ldap3 import Connection, Server, SIMPLE, SUBTREE, ALL_ATTRIBUTES, MODIFY_ADD
+import sqlite3
+import json
+import os
+from ldap3 import Connection, Server, SIMPLE, SUBTREE, ALL_ATTRIBUTES
 from ldap_util import LDAPUtil
 
 # Logging configuration
@@ -68,13 +71,6 @@ class LDAPIntegration:
         except Exception as e:
             logger.error(f"Failed to add user: {e}")
 
-    async def delete_user(self, user_dn):
-        try:
-            self.connection.delete(user_dn)
-            logger.info(f"User deleted: {user_dn}")
-        except Exception as e:
-            logger.error(f"Failed to delete user: {e}")
-
 
 class DBConnector:
     def __init__(self, db_path):
@@ -109,12 +105,26 @@ def load_config(config_file):
         logger.error(f"Error loading config file: {e}")
         return None
 
-# Validate user roles and access control
+# Hypothetical role-based access control logic
 
 
 def validate_user_role(user_dn):
-    # Add your role-based access control logic here
-    return True
+    # In this simplified example, we assume two roles: 'admin' and 'user'
+    # You can customize this logic based on your LDAP schema and roles
+    admin_group_dn = "CN=Admins,OU=Groups,DC=tam-range,DC=com"
+    user_group_dn = "CN=Users,OU=Groups,DC=tam-range,DC=com"
+
+    # Check if the user is a member of the 'admin' group
+    if LDAPUtil.is_member_of_group(user_dn, admin_group_dn):
+        return "admin"
+
+    # Check if the user is a member of the 'user' group
+    elif LDAPUtil.is_member_of_group(user_dn, user_group_dn):
+        return "user"
+
+    # User doesn't belong to any valid role
+    else:
+        return None
 
 
 async def main():
@@ -131,25 +141,20 @@ async def main():
     # Connect to LDAP server
     await ldap_integration.connect()
 
-    # Add the user "Rohit Tambakhe"
-    user_dn = "cn=Rohit Tambakhe,ou=users,dc=tam-range,dc=com"
-    attributes = {
-        'objectClass': ['top', 'person', 'organizationalPerson', 'inetOrgPerson'],
-        'cn': ['Rohit Tambakhe'],
-        'sn': ['Tambakhe'],
-        'givenName': ['Rohit'],
-        'uid': ['rohit.tambakhe'],
-        'userPassword': ['{SSHA}password123']
-    }
-    await ldap_integration.add_user(user_dn, attributes)
-    logger.info(f"User added: {user_dn}")
+    # Authenticate the user
+    username = "rohit.tambakhe"
+    password = "password123"
+    if await ldap_integration.authenticate(username, password):
+        logger.info(f"User {username} authenticated successfully.")
 
-    # Log the user addition action
-    db_connector.log_user_action("add", user_dn)
-
-    # Validate user roles and access control
-    if validate_user_role(user_dn):
-        logger.info("User has valid role and access.")
+        # Hypothetical role-based access control
+        user_role = validate_user_role(username)
+        if user_role == "admin":
+            logger.info("User has 'admin' role and access.")
+        elif user_role == "user":
+            logger.info("User has 'user' role and access.")
+        else:
+            logger.warning("User does not have a valid role or access.")
 
     # Disconnect from LDAP server
     await ldap_integration.disconnect()
