@@ -1,0 +1,53 @@
+stages:
+  - setup
+  - deploy
+  - cleanup
+
+variables:
+  VAULT_ADDR: "https://vault.tam-range.com"
+  VAULT_TOKEN: $VAULT_TOKEN
+before_script:
+  - apt-get update
+  - apt-get install -y curl
+  - curl -fsSL https://get.pulumi.com | sh
+  - export PATH=$PATH:$HOME/.pulumi/bin
+  - pulumi login
+
+setup_vault:
+  stage: setup
+  script:
+    # Unseal Vault (assuming you have the necessary keys)
+    - vault operator unseal CI_VAULT_KEY_1
+    - vault operator unseal CI_VAULT_KEY_2
+    - vault operator unseal CI_VAULT_KEY_3
+    # Authenticate with Vault
+    - export VAULT_ADDR
+    - export VAULT_TOKEN
+    - vault login $VAULT_TOKEN
+  only:
+    - master  # Trigger only on the master branch
+
+deploy_pulumi:
+  stage: deploy
+  script:
+    # Initialize a Pulumi stack
+    - pulumi stack init my-stack
+    # Deploy your Pulumi stack
+    - pulumi up --yes
+  only:
+    - master  # Trigger only on the master branch
+  environment:
+    name: production
+    url: https://tam-range.com  # Updated with your production URL
+
+cleanup_resources:
+  stage: cleanup
+  script:
+    # Delete Pulumi resources when needed (e.g., after tests)
+    - pulumi destroy --yes
+    # Remove Pulumi stack
+    - pulumi stack rm -f my-stack
+  only:
+    - master
+  when: manual
+  allow_failure: true  # Allow manual cleanup job to fail
