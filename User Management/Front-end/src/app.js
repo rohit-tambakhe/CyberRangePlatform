@@ -1,6 +1,6 @@
 // App.js
 import React, { useState } from 'react';
-import Login from './components/Login/Login';
+import Login from './components/login/login';
 import Dashboard from './components/Dashboard/Dashboard';
 import Registration from './components/Registration/Registration'; // New component
 import './App.css';
