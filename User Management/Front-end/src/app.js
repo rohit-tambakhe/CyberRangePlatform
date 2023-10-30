@@ -1,13 +1,15 @@
+// App.js
 import React, { useState } from 'react';
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
+import Registration from './components/Registration/Registration'; // New component
 import './App.css';
 
 function App() {
-  const [username, setusername] = useState(null);
+  const [username, setUsername] = useState(null);
 
-  const handleLogin = (username) => {
-    setusername(username);
+  const handleLogin = (newUsername) => {
+    setUsername(newUsername);
   };
 
   return (
@@ -15,7 +17,10 @@ function App() {
       {username ? (
         <Dashboard username={username} />
       ) : (
-        <Login onLogin={handleLogin} />
+        <>
+          <Login onLogin={handleLogin} />
+          <Registration onRegister={handleLogin} /> {/* New component */}
+        </>
       )}
     </div>
   );
