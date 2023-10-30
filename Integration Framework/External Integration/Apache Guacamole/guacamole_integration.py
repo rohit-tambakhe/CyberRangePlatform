@@ -24,11 +24,11 @@ class GuacamoleIntegration:
 if __name__ == "__main__":
     guacamole_url = "https://guacamole.tam-range.com"
     connection_params = {"hostname": "192.168.1.10",
-                         "port": "22", "tambakhe": "user", "password": "pass"}
+                         "port": "22", "username": "tambakhe", "password": "pass"}
 
     # Assuming you have a method to retrieve the user token from Trove
     user_token = get_user_token_from_trove(
-        "tambakhe")  # Replace with the actual user ID
+        "tambakhe")
 
     guacamole_integration = GuacamoleIntegration(guacamole_url)
     result = guacamole_integration.create_guacamole_connection(

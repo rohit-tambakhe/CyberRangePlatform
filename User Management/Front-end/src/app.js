@@ -4,16 +4,16 @@ import Dashboard from './components/Dashboard/Dashboard';
 import './App.css';
 
 function App() {
-  const [tambakhe, settambakhe] = useState(null);
+  const [username, setusername] = useState(null);
 
-  const handleLogin = (tambakhe) => {
-    settambakhe(tambakhe);
+  const handleLogin = (username) => {
+    setusername(username);
   };
 
   return (
     <div className="app-container">
-      {tambakhe ? (
-        <Dashboard tambakhe={tambakhe} />
+      {username ? (
+        <Dashboard username={username} />
       ) : (
         <Login onLogin={handleLogin} />
       )}

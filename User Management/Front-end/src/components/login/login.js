@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import './Login.css';
 
 function Login({ onLogin }) {
-  const [tambakhe, settambakhe] = useState('');
+  const [username, setusername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Assume authenticateUser is a function that sends a request to your backend
-    const isAuthenticated = await authenticateUser(tambakhe, password);
+    const isAuthenticated = await authenticateUser(username, password);
     if (isAuthenticated) {
-      onLogin(tambakhe);
+      onLogin(username);
     } else {
       alert('Authentication failed. Please try again.');
     }
@@ -21,9 +21,9 @@ function Login({ onLogin }) {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="tambakhe"
-          value={tambakhe}
-          onChange={(e) => settambakhe(e.target.value)}
+          placeholder="username"
+          value={username}
+          onChange={(e) => setusername(e.target.value)}
         />
         <input
           type="password"

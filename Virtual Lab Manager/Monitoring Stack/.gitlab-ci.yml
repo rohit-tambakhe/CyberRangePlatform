@@ -29,7 +29,7 @@ deploy_staging:
   script:
     - pulumi login
     - pulumi stack init pulumi-staging
-    - pulumi config set openstack:tambakhe $OS_USERNAME
+    - pulumi config set openstack:username $OS_USERNAME
     - pulumi config set openstack:password $OS_PASSWORD
     - pulumi config set openstack:authUrl $OS_AUTH_URL
     - pulumi config set openstack:projectName $OS_PROJECT_NAME
@@ -48,7 +48,7 @@ deploy_production:
   script:
     - pulumi login
     - pulumi stack init pulumi-production
-    - pulumi config set openstack:tambakhe $OS_USERNAME
+    - pulumi config set openstack:username $OS_USERNAME
     - pulumi config set openstack:password $OS_PASSWORD
     - pulumi config set openstack:authUrl $OS_AUTH_URL
     - pulumi config set openstack:projectName $OS_PROJECT_NAME

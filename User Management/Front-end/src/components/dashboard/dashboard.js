@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 
-function Dashboard({ tambakhe }) {
+function Dashboard({ username }) {
   const [scenarios, setScenarios] = useState([]);
 
   useEffect(() => {
     // Assume fetchScenarios is a function that sends a request to your backend
-    const data = fetchScenarios(tambakhe);
+    const data = fetchScenarios(username);
     setScenarios(data);
-  }, [tambakhe]);
+  }, [username]);
 
   return (
     <div className="dashboard-container">
-      <h1>Welcome, {tambakhe}</h1>
+      <h1>Welcome, {username}</h1>
       <ul className="scenario-list">
         {scenarios.map((scenario) => (
           <li key={scenario.id}>

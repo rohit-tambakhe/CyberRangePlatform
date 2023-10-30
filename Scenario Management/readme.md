@@ -37,5 +37,5 @@ A relational database is used to store data for all microservices. It contains t
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-tambakhe/scenario-management-system.git
+git clone https://github.com/rohit-tambakhe/scenario-management-system.git
 cd scenario-management-system

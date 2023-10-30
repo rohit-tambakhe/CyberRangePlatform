@@ -5,7 +5,7 @@ from datetime import datetime
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    response = ldap_manager.authenticate(data['tambakhe'], data['password'])
+    response = ldap_manager.authenticate(data['username'], data['password'])
     if response.status == AuthenticationResponseStatus.success:
         return jsonify(message='Login successful'), 200
     return jsonify(message='Login failed'), 401

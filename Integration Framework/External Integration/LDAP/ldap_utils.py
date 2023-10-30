@@ -140,13 +140,13 @@ async def main():
     await ldap_integration.connect()
 
     # Authenticate the user
-    tambakhe = "rohit.tambakhe"
+    username = "rohit.tambakhe"
     password = "password123"
-    if await ldap_integration.authenticate(tambakhe, password):
-        logger.info(f"User {tambakhe} authenticated successfully.")
+    if await ldap_integration.authenticate(username, password):
+        logger.info(f"User {username} authenticated successfully.")
 
         # Hypothetical role-based access control
-        user_role = validate_user_role(tambakhe)
+        user_role = validate_user_role(username)
         if user_role == "admin":
             logger.info("User has 'admin' role and access.")
         elif user_role == "user":
