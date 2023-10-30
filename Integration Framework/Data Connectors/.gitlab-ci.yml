@@ -1,0 +1,33 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+before_script:
+  - docker info
+
+build_image:
+  stage: build
+  script:
+    - docker build -t tenant-data-connector .
+    - docker save tenant-data-connector | gzip > tenant-data-connector.tar.gz
+  artifacts:
+    paths:
+      - tenant-data-connector.tar.gz
+
+test:
+  stage: test
+  script:
+    - docker load < tenant-data-connector.tar.gz
+    - docker run tenant-data-connector python -m unittest discover
+
+deploy:
+  stage: deploy
+  script:
+    - docker load < tenant-data-connector.tar.gz
+    - docker run -d -p 80:80 --name tenant-data-connector tenant-data-connector
+  only:
+    - master
