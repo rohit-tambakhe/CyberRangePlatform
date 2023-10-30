@@ -8,7 +8,7 @@ import yaml
 import argparse  # Import argparse for command-line argument parsing
 
 # Read OpenStack authentication information from environment variables
-os_username = pulumi.get_env("OS_USERNAME")
+OS_USERNAME = pulumi.get_env("OS_USERNAME")
 os_password = pulumi.secret(pulumi.get_env("OS_PASSWORD"))
 os_auth_url = pulumi.get_env("OS_AUTH_URL")
 os_project_name = pulumi.get_env("OS_PROJECT_NAME")
@@ -36,7 +36,7 @@ with open(selected_config_file, "r") as config_file:
 provider = openstack.Provider(
     "openstack-provider",
     identity_endpoint=os_auth_url,
-    user_name=os_username,
+    user_name=OS_USERNAME,
     password=os_password,
     tenant_name=os_project_name,
     domain_name=os_user_domain_name,

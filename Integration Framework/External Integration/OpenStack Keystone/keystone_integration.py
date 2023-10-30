@@ -4,13 +4,13 @@ from troveclient.v1 import client as trove_client
 
 
 class KeystoneIntegration:
-    def __init__(self, trove_url, username, password, user_domain_name, project_domain_name, project_name):
+    def __init__(self, trove_url, tambakhe, password, user_domain_name, project_domain_name, project_name):
         self.trove_url = trove_url
         self.trove_client = self._get_trove_client(
-            username, password, user_domain_name, project_domain_name, project_name)
+            tambakhe, password, user_domain_name, project_domain_name, project_name)
 
-    def _get_trove_client(self, username, password, user_domain_name, project_domain_name, project_name):
-        return trove_client.Client(username=username,
+    def _get_trove_client(self, tambakhe, password, user_domain_name, project_domain_name, project_name):
+        return trove_client.Client(tambakhe=tambakhe,
                                    password=password,
                                    user_domain_name=user_domain_name,
                                    project_domain_name=project_domain_name,
@@ -24,17 +24,17 @@ class KeystoneIntegration:
         return user_token
 
 
-# Example Usage:
+
 if __name__ == "__main__":
     trove_url = "https://trove.tam-range.com:5000/v3"
-    username = "admin"
+    tambakhe = "admin"
     password = "password"
     user_domain_name = "Default"
     project_domain_name = "Default"
     project_name = "admin"
 
     keystone_integration = KeystoneIntegration(
-        trove_url, username, password, user_domain_name, project_domain_name, project_name)
+        trove_url, tambakhe, password, user_domain_name, project_domain_name, project_name)
     user_id = "tambakhe"  # Replace with the actual user ID
     user_token = keystone_integration.get_user_token(user_id)
     print(f"User Token: {user_token}")

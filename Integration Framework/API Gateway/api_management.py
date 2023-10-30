@@ -63,7 +63,7 @@ if __name__ == "__main__":
     tyk_url = "https://api.tam-range.com/api"
     keystone_url = "https://keystone.tam-range.com:5000/v3"
     keystone_credentials = {
-        "username": "your_username",
+        "tambakhe": "tambakhe",
         "password": "your_password",
         "user_domain_name": "your_user_domain",
         "project_domain_name": "your_project_domain",

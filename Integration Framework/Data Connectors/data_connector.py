@@ -112,7 +112,7 @@ class TenantDataConnector:
 if __name__ == "__main__":
     keystone_url = "https://keystone.tam-range.com:5000/v3"
     keystone_credentials = {
-        "username": "admin",
+        "tambakhe": "admin",
         "password": "password",
         "user_domain_name": "Default",
         "project_domain_name": "Default",

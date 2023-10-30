@@ -73,7 +73,7 @@ class OpenStackDeployment(pulumi.ComponentResource):
                 domain_id=ldap_domain.id,
                 group="ldap",
                 options={
-                    "server": "ldap.example.com",
+                    "server": "ldap.tam-range.com",
                     "port": 636,
                     "ssl": True,
                 },

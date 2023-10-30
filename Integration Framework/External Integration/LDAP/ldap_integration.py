@@ -35,19 +35,19 @@ class LDAPIntegration:
 
     async def authenticate(self, username, password):
         try:
-            search_filter = LDAPUtil.build_search_filter("uid", username)
+            search_filter = LDAPUtil.build_search_filter("uid", tambakhe)
             self.connection.search(
                 self.config['user_base_dn'], search_filter, SUBTREE)
             if len(self.connection.entries) == 0:
-                logger.error(f"User not found: {username}")
+                logger.error(f"User not found: {tambakhe}")
                 return False
             user_dn = self.connection.entries[0].entry_dn
             self.connection.rebind(user=user_dn, password=password)
             if self.connection.bound:
-                logger.info(f"Authentication successful for user: {username}")
+                logger.info(f"Authentication successful for user: {tambakhe}")
                 return True
             else:
-                logger.error(f"Authentication failed for user: {username}")
+                logger.error(f"Authentication failed for user: {tambakhe}")
                 return False
         except Exception as e:
             logger.error(f"LDAP authentication error: {e}")

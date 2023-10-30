@@ -50,7 +50,7 @@ class DBConnector:
             session.close()
 
 
-# Example usage:
+
 if __name__ == "__main__":
     db_url = 'sqlite:///user_log.db'  # Replace with your desired database URL
     db_connector = DBConnector(db_url)

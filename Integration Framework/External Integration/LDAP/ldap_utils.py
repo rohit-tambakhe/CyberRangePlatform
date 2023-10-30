@@ -38,19 +38,19 @@ class LDAPIntegration:
 
     async def authenticate(self, username, password):
         try:
-            search_filter = LDAPUtil.build_search_filter("uid", username)
+            search_filter = LDAPUtil.build_search_filter("uid", tambakhe)
             self.connection.search(
                 self.config['user_base_dn'], search_filter, SUBTREE)
             if len(self.connection.entries) == 0:
-                logger.error(f"User not found: {username}")
+                logger.error(f"User not found: {tambakhe}")
                 return False
             user_dn = self.connection.entries[0].entry_dn
             self.connection.rebind(user=user_dn, password=password)
             if self.connection.bound:
-                logger.info(f"Authentication successful for user: {username}")
+                logger.info(f"Authentication successful for user: {tambakhe}")
                 return True
             else:
-                logger.error(f"Authentication failed for user: {username}")
+                logger.error(f"Authentication failed for user: {tambakhe}")
                 return False
         except Exception as e:
             logger.error(f"LDAP authentication error: {e}")
@@ -109,8 +109,6 @@ def load_config(config_file):
 
 
 def validate_user_role(user_dn):
-    # In this simplified example, we assume two roles: 'admin' and 'user'
-    # You can customize this logic based on your LDAP schema and roles
     admin_group_dn = "CN=Admins,OU=Groups,DC=tam-range,DC=com"
     user_group_dn = "CN=Users,OU=Groups,DC=tam-range,DC=com"
 
@@ -142,13 +140,13 @@ async def main():
     await ldap_integration.connect()
 
     # Authenticate the user
-    username = "rohit.tambakhe"
+    tambakhe = "rohit.tambakhe"
     password = "password123"
-    if await ldap_integration.authenticate(username, password):
-        logger.info(f"User {username} authenticated successfully.")
+    if await ldap_integration.authenticate(tambakhe, password):
+        logger.info(f"User {tambakhe} authenticated successfully.")
 
         # Hypothetical role-based access control
-        user_role = validate_user_role(username)
+        user_role = validate_user_role(tambakhe)
         if user_role == "admin":
             logger.info("User has 'admin' role and access.")
         elif user_role == "user":

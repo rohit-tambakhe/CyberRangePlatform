@@ -84,7 +84,7 @@ if __name__ == "__main__":
     tyk_url = "https://api.tam-range.com/api"
     keystone_url = "https://keystone.tam-range.com:5000/v3"
     keystone_credentials = {
-        "username": "your_username",
+        "tambakhe": "tambakhe",
         "password": "your_password",
         "user_domain_name": "your_user_domain",
         "project_domain_name": "your_project_domain",
@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
     tyk_manager = TykAPIManager(tyk_url, keystone_url, keystone_credentials)
 
-    # Example usage
+
     try:
         tyk_manager.create_api_definition(
             "keystone", "https://keystone.tam-range.com")
