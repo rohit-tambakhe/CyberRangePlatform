@@ -1,0 +1,38 @@
+version: '3'
+services:
+  tyk-gateway:
+    image: tykio/tyk-gateway:v3.2
+    ports:
+      - "8080:8080"
+    networks:
+      - tyk_net
+    environment:
+      - TYK_GW_SECRET=my-super-secret-key
+
+  tyk-dashboard:
+    image: tykio/tyk-dashboard:v3.2
+    ports:
+      - "3000:3000"
+    networks:
+      - tyk_net
+    environment:
+      - TYK_DB_SECRET=my-super-secret-key
+
+  tyk-pump:
+    image: tykio/tyk-pump-docker-pub:v1.2
+    networks:
+      - tyk_net
+
+  redis:
+    image: redis:alpine
+    networks:
+      - tyk_net
+
+  mongo:
+    image: mongo
+    networks:
+      - tyk_net
+
+networks:
+  tyk_net:
+    external: false

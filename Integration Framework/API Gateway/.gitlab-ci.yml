@@ -1,0 +1,35 @@
+stages:
+  - build
+  - deploy
+  - cleanup
+
+variables:
+  DOCKER_DRIVER: overlay2
+  COMPOSE_PROJECT_NAME: tyk-gateway
+
+before_script:
+  - docker info
+
+# Build stage to build Docker images if necessary (optional)
+build:
+  stage: build
+  script:
+    - docker-compose build
+  only:
+    - master
+
+# Deploy stage to deploy Tyk using Docker Compose
+deploy:
+  stage: deploy
+  script:
+    - docker-compose up -d
+  only:
+    - master
+
+# Cleanup stage to remove old Docker containers and images
+cleanup:
+  stage: cleanup
+  script:
+    - docker-compose down -v
+    - docker system prune -af
+  when: manual  # Manual trigger to clean up
