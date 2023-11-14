@@ -1,0 +1,34 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+## Documentation
+
+For full Karpenter documentation please checkout [https://karpenter.sh](https://karpenter.sh/v{{ template "chart.version" . }}/).
+
+## Installing the Chart
+
+Before the chart can be installed the repo needs to be added to Helm, run the following commands to add the repo.
+
+```bash
+helm repo add karpenter https://charts.karpenter.sh/
+helm repo update
+```
+
+You can follow the detailed installation instruction in the [documentation](https://karpenter.sh/v{{ template "chart.version" . }}/getting-started/getting-started-with-eksctl/#install) which covers the Karpenter prerequisites and installation options. The outcome of these instructions should result in something like the following command.
+
+```bash
+helm upgrade --install --namespace karpenter --create-namespace \
+  karpenter karpenter/{{ template "chart.name" . }} \
+  --version {{ template "chart.version" . }} \
+  --set clusterName=${CLUSTER_NAME} \
+  --set clusterEndpoint=${CLUSTER_ENDPOINT} \
+  --wait # for the defaulting webhook to install before creating a Provisioner
+```
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

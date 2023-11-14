@@ -1,0 +1,10 @@
+controller:
+  kind: DaemonSet
+  admissionWebhooks:
+    enabled: false
+  service:
+    type: LoadBalancer
+    internal:
+      enabled: true
+      annotations:
+        openstack-lb-type: internal

@@ -1,0 +1,163 @@
+tyk-gateway:
+  nameOverride: ""
+  fullnameOverride: ""
+  gateway:
+    hostName: api-gateway.tam-range.com
+    Environment: stage
+    namespace: tyk
+    tls:
+      useDefaultTykCertificate: true
+      secretName: tyk-default-tls-secret
+    kind: Deployment
+    podAnnotations: {}
+    image:
+      repository: tykio/tyk-gateway
+      tag: v5.0.7
+      pullPolicy: IfNotPresent
+    service:
+      type: LoadBalancer  # Use LoadBalancer for OpenStack
+      externalTrafficPolicy: Local
+      annotations: {}
+    control:
+      enabled: false
+      containerPort: 9696
+      port: 9696
+      type: ClusterIP
+      annotations: {}
+    autoscale:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 1
+      targetCPUUtilizationPercentage: 65
+      targetMemoryUtilizationPercentage: 70
+      targetRequestRate: 1000
+    ingress:
+      enabled: true
+      className: "octavia"  # Octavia Ingress Controller class name
+      annotations:
+        kubernetes.io/ingress.class: "octavia"
+        octavia.ingress.kubernetes.io/healthcheck-path: "/hello"
+        octavia.ingress.kubernetes.io/healthcheck-port: "8080"
+        octavia.ingress.kubernetes.io/healthcheck-protocol: HTTP
+        octavia.ingress.kubernetes.io/group: "tam-range-stage-tyk-api-gateway"
+        octavia.ingress.kubernetes.io/scheme: internal
+        octavia.ingress.kubernetes.io/listen-ports: '[{"HTTP": 8080}]'
+      hosts:
+        - host: api-gateway.tam-range.com
+      paths:
+          - path: /*
+            pathType: ImplementationSpecific
+      tls: []
+    resources:
+      limits:
+        cpu: 5000m
+        memory: 3000Mi
+      requests:
+        cpu: 5000m
+        memory: 3000Mi
+    securityContext:
+      runAsUser: 1000
+      fsGroup: 2000
+    nodeSelector:
+      Type: "amd64"
+    tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+    affinity: {}
+    extraEnvs:
+      - name: TYK_GW_NEWRELIC_APPNAME
+        value: "tyk-api-gateway-stage"
+      - name: TYK_GW_NEWRELIC_ENABLEDISTRIBUTEDTRACING
+        value: "true"
+      - name: TYK_GW_TRACER_ENABLED
+        value: "true"
+      - name: TYK_GW_TRACER_TYPE
+        value: "zipkin"
+      - name: TYK_LOGLEVEL
+        value: "debug"
+      - name: TYK_GW_HEALTHCHECK_ENABLEHEALTHCHECKS
+        value: "false"
+      - name: TYK_GW_COPROCESSOPTIONS_ENABLECOPROCESS
+        value: "true"
+      - name: TYK_GW_COPROCESSOPTIONS_PYTHONPATHPREFIX
+        value: "/opt/tyk-gateway"
+      - name: TYK_GW_ENABLEBUNDLEDOWNLOADER
+        value: "true"
+      - name: TYK_GW_BUNDLEBASEURL
+        value: "http://glance.tam-range.com/tyk-gateway/bundles/"
+      - name: TYK_GW_MAXIDLECONNSPERHOST
+        value: "1000"
+    extraVolumes:
+      - name: api-mount
+        hostPath:
+          path: /var/s3fs/tyk-gateway/apps
+          type: DirectoryOrCreate
+      - name: middleware-mount
+        hostPath:
+          path: /var/s3fs/tyk-gateway/middleware
+          type: DirectoryOrCreate
+      - name: python-middleware-mount
+        emptyDir: {}
+
+tyk-pump:
+  nameOverride: ""
+  fullnameOverride: ""
+  pump:
+    replicaCount: 1
+    podAnnotations:
+      sidecar.istio.io/inject: "false"
+    image:
+      repository: tykio/tyk-pump
+      tag: v1.8.1-amd64
+      pullPolicy: IfNotPresent
+    service:
+      enabled: true
+      type: LoadBalancer  # Use LoadBalancer for OpenStack
+      port: 9090
+      externalTrafficPolicy: Local
+      annotations: {}
+    containerPort: 9090
+    healthPort: 8083
+    backend:
+      - "prometheus"
+    uptimePumpBackend: ""
+    prometheusPump:
+      host: "0.0.0.0"
+      path: /metrics
+      customMetrics: '[{"name":"tyk_http_requests_total","description":"Total of API requests","metric_type":"counter","labels":["response_code","api_name","method","api_key","alias","path"]},{"name":"tyk_http_latency","description":"Latency of API requests","metric_type":"histogram","labels":["type","response_code","api_name","method","api_key","alias","path"]}]'
+      prometheusOperator:
+        enabled: false
+        podMonitorSelector:
+          release: prometheus-stack
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    securityContext:
+      runAsUser: 1000
+      fsGroup: 2000
+    nodeSelector:
+      Type: "amd64"
+    tolerations: []
+    affinity: {}
+    extraEnvs:
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_TYPE
+        value: "elasticsearch"
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_META_INDEXNAME
+        value: "tyk_analytics"
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_META_ELASTICSEARCHURL
+        value: "https://stage-elasticsearch.tam-range.com"
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_META_ENABLESNIFFING
+        value: "false"
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_META_DOCUMENTTYPE
+        value: "tyk_analytics"
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_META_ROLLINGINDEX
+        value: "false"
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_META_EXTENDEDSTATISTICS
+        value: "false"
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_META_VERSION
+        value: "5"
+      - name: TYK_PMP_PUMPS_ELASTICSEARCH_META_BULKCONFIG_WORK

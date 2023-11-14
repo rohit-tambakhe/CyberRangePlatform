@@ -1,0 +1,55 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cyber-range-ingress
+  namespace: cyber-range
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: tam-range.com
+    http:
+      paths:
+      - path: /analytics(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: analytics-engine-service
+            port:
+              number: 80
+      - path: /api-gateway(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+      - path: /scenario(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: scenario-management-service
+            port:
+              number: 80
+      - path: /user-management(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: user-management-service
+            port:
+              number: 80
+      - path: /vault(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: vault-service
+            port:
+              number: 80
+      - path: /virtual-lab(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: virtual-lab-manager-service
+            port:
+              number: 80

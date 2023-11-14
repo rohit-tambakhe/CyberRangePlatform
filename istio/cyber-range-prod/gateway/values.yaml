@@ -1,0 +1,58 @@
+name: ""
+revision: ""
+
+replicaCount: 1
+
+kind: Deployment
+
+rbac:
+  enabled: true
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  prometheus.io/port: "15020"
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/stats/prometheus"
+  inject.istio.io/templates: "gateway"
+  sidecar.istio.io/inject: "true"
+
+securityContext: ~
+containerSecurityContext: ~
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "octavia"  # Use Octavia Ingress Controller class name
+    octavia.ingress.kubernetes.io/healthcheck-interval-seconds: '10'
+    octavia.ingress.kubernetes.io/scheme: internet-facing
+    octavia.ingress.kubernetes.io/healthcheck-path: /healthz/ready
+    octavia.ingress.kubernetes.io/healthcheck-port: '30400'
+    octavia.ingress.kubernetes.io/healthcheck-protocol: HTTPS
+    octavia.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    octavia.ingress.kubernetes.io/inbound-cidrs: 10.1.1.0
+    octavia.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    octavia.ingress.kubernetes.io/actions.istio-ingressgateway: >
+        {"Type":"forward","ForwardConfig":{"TargetGroups":[{"ServiceName":"istio-ingressgateway","ServicePort":"80","Weight":100}]}}
+    octavia.ingress.kubernetes.io/actions.default: |
+        {"Type":"fixed-response","FixedResponseConfig":{"ContentType":"application/json","StatusCode":"403","MessageBody":"{ \"code\" : 403, \"message\" : \"The requested URI is forbidden, please use the correct URI\"  }"}}
+
+ingress-private:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "octavia"  # Use Octavia Ingress Controller class name
+    octavia.ingress.kubernetes.io/healthcheck-interval-seconds: '10'
+    octavia.ingress.kubernetes.io/scheme: internet-facing
+    octavia.ingress.kubernetes.io/healthcheck-path: /healthz/ready
+    octavia.ingress.kubernetes.io/healthcheck-port: '30400'
+    octavia.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    octavia.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    octavia.ingress.kubernetes.io/inbound-cidrs: 10.1.1.0
+    octavia.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    octavia.ingress.kubernetes.io/actions.istio-ingressgateway: >
+        {"Type":"forward","ForwardConfig":{"TargetGroups":[{"ServiceName":"istio-ingressgateway","ServicePort":"80","Weight":100}]}}
+    octavia.ingress.kubernetes.io/actions.default: |
+        {"Type":"fixed-response","FixedResponseConfig":{"ContentType":"application/json","StatusCode":"403","MessageBody":"{ \"code\" : 403, \"message\" : \"The requested URI is forbidden, please use the correct URI\"  }"}}

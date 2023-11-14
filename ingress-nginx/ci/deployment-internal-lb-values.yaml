@@ -1,0 +1,10 @@
+controller:
+  admissionWebhooks:
+    enabled: false
+  service:
+    type: ClusterIP
+    internal:
+      enabled: true
+      annotations:
+        service.beta.kubernetes.io/octavia-balancer-internal: 0.0.0.0/0
+        loadbalancer.openstack.org/internal: "true"

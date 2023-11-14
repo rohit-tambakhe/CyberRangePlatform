@@ -1,0 +1,30 @@
+{{- if .Values.ingress.enabled -}}
+  {{- $srvPort := .Values.service.srvport -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: istio-ingress-public
+  namespace: {{ .Values.namespace }}
+  labels:
+    istio: ingressgateway
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  defaultBackend:
+    service:
+      name: default
+      port:
+        name: use-annotation
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: istio-ingressgateway-prod
+                port:
+                  number: 80
+            path: /*
+            pathType: ImplementationSpecific
+  {{- end }}

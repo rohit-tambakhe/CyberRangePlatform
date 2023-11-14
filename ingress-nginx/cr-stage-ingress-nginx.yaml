@@ -1,0 +1,34 @@
+Namespace: ingress-nginx
+controller:
+  name: controller
+  image:
+    registry: registry.k8s.io
+    image: ingress-nginx/controller
+    tag: "v1.8.0"
+    pullPolicy: IfNotPresent
+    runAsUser: 101
+    allowPrivilegeEscalation: true
+
+  existingPsp: ""
+  containerName: controller
+  containerPort:
+    http: 80
+    https: 443
+    tohttps: 2443
+  config:
+    enable-underscores-in-headers: "true"
+    ssl-redirect: "true"
+    use-forwarded-headers: "true"
+    client-header-buffer-size: "1m"
+    client-body-buffer-size: "1m"
+    http2-max-header-size: "1m"
+    use-http2: "true"
+    log-format-escape-json: "true"
+    log-format-upstream: '{"request_id":"$request_id", "host":"$host", "upstream_responses":"$upstream_response_time", "http_client_ip":"$remote_addr", "http_local_time":"$time_local", "status_response":$status, "http_method":"$request_method", "http_request":"$request_uri", "http_parameters":"$query_string", "http_size":$body_bytes_sent, "request_length":$request_length, "http_referer":"$http_referer", "http_user_agent":"$http_user_agent", "upstream_referrer":"$upstream_addr", "request_time":$request_time, "scheme" : $scheme, "http_version": $server_protocol}'
+
+  service:
+    type: ClusterIP
+    internal:
+      enabled: true
+      annotations:
+        loadbalancer.openstack.org/internal: "true"

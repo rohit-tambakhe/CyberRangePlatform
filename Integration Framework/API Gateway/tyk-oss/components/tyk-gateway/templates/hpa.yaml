@@ -1,0 +1,41 @@
+{{- if .Values.gateway.autoscale.enabled -}}
+{{- $fullName := include "tyk-gateway.fullname" . -}}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Chart.Name }}-{{ .Values.gateway.Environment }}-hpa
+  namespace: {{ .Values.gateway.namespace }}
+spec:
+  maxReplicas: {{ .Values.gateway.autoscale.maxReplicas }}
+  metrics:
+{{- with .Values.gateway.autoscale.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+{{- end }}
+{{- with .Values.gateway.autoscale.targetRequestRate }}
+    - type: External
+      external:
+        metric:
+          name: tyk_http_requests_per_second
+        target:
+          type: AverageValue
+          averageValue: {{ . }}
+{{- end }}
+{{- with .Values.gateway.autoscale.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+{{- end }}
+  minReplicas: {{ .Values.gateway.autoscale.minReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gateway-{{ $fullName }}
+{{- end }}

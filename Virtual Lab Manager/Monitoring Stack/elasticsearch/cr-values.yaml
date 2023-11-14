@@ -1,0 +1,179 @@
+---
+clusterName: "elasticsearch-prod"
+nodeGroup: "master"
+
+masterService: ""
+
+roles:
+  master: "true"
+  ingest: "true"
+  data: "true"
+  remote_cluster_client: "true"
+  ml: "true"
+
+replicas: 7
+minimumMasterNodes: 3
+
+esMajorVersion: ""
+
+clusterDeprecationIndexing: "false"
+
+esConfig: {}
+esJvmOptions: {}
+
+extraEnvs: []
+
+envFrom: []
+
+secretMounts: []
+
+hostAliases: []
+
+image: "elastic"
+imageTag: "8.11.0"
+imagePullPolicy: "IfNotPresent"
+
+podAnnotations: {}
+labels: {}
+
+esJavaOpts: "-Xmx4g -Xms4g"
+
+resources:
+  requests:
+    cpu: "5000m"
+    memory: "8Gi"
+  limits:
+    cpu: "5000m"
+    memory: "8Gi"
+
+initResources: {}
+
+networkHost: "0.0.0.0"
+
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: gp3
+  resources:
+    requests:
+      storage: 2000Gi
+
+rbac:
+  create: false
+  serviceAccountAnnotations: {}
+  serviceAccountName: ""
+  automountToken: true
+
+podSecurityPolicy:
+  create: false
+  name: ""
+  spec:
+    privileged: true
+    fsGroup:
+      rule: RunAsAny
+    runAsUser:
+      rule: RunAsAny
+    seLinux:
+      rule: RunAsAny
+    supplementalGroups:
+      rule: RunAsAny
+    volumes:
+      - secret
+      - configMap
+      - persistentVolumeClaim
+      - emptyDir
+
+persistence:
+  enabled: true
+  labels:
+    enabled: false
+  annotations: {}
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+extraContainers: []
+
+extraInitContainers: []
+
+priorityClassName: ""
+
+antiAffinityTopologyKey: "kubernetes.io/hostname"
+
+antiAffinity: "hard"
+
+nodeAffinity: {}
+
+podManagementPolicy: "Parallel"
+
+enableServiceLinks: true
+
+protocol: http
+httpPort: 9200
+transportPort: 9300
+
+service:
+  labels: {}
+  labelsHeadless: {}
+  type: NodePort
+  nodePort: ""
+  annotations: {}
+  httpPortName: http
+  transportPortName: transport
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  externalTrafficPolicy: ""
+
+updateStrategy: RollingUpdate
+
+maxUnavailable: 1
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
+
+terminationGracePeriod: 120
+
+sysctlVmMaxMapCount: 262144
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 3
+  timeoutSeconds: 5
+
+clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
+
+schedulerName: ""
+
+nodeSelector:
+  Type: amd64
+  workLoadType: cpu
+imagePullSecrets: []
+
+tolerations: []
+
+ingress:
+  enabled: true
+  annotations:
+     octavia.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+
+     octavia.ingress.kubernetes.io/group.name: istio-internal-ingressgateway
+     octavia.ingress.kubernetes.io/healthcheck-interval-seconds: "10"
+  hosts:
+    - host: elasticsearch.tam-range.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - elasticsearch.tam-range.com
+      secretName: r-secret
