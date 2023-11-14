@@ -90,11 +90,11 @@ spec:
           # Legacy support for Redis Cluster driver. Driver dropped in v3.0.0.
           - name: REDIGOCLUSTER_SHARDCOUNT
             value: "128"
-          - name: KOMODO_APP_TOKEN
+          - name: cr_APP_TOKEN
             valueFrom:
               secretKeyRef:
-                name: komodo-app-token
-                key: KOMODO_APP_TOKEN
+                name: cr-app-token
+                key: cr_APP_TOKEN
           - name: TYK_GW_STORAGE_TYPE
             value: "redis"
           - name: TYK_GW_STORAGE_ADDRS
