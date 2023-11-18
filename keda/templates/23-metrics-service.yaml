@@ -21,10 +21,10 @@ spec:
     port: {{ .Values.service.portHttp }}
     targetPort: {{ .Values.service.portHttpTarget }}
     protocol: TCP
-  {{- if .Values.prometheus.metricServer.enabled }}
-  - name: {{ .Values.prometheus.metricServer.portName }}
-    port: {{ .Values.prometheus.metricServer.port }}
-    targetPort: {{ .Values.prometheus.metricServer.port }}
+  {{- if .Values.elasticsearch.metricServer.enabled }}
+  - name: {{ .Values.elasticsearch.metricServer.portName }}
+    port: {{ .Values.elasticsearch.metricServer.port }}
+    targetPort: {{ .Values.elasticsearch.metricServer.port }}
     protocol: TCP
   {{- end }}
   selector:

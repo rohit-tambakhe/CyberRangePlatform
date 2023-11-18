@@ -74,8 +74,8 @@ spec:
           - "--zap-log-level={{ .Values.logging.operator.level }}"
           - "--zap-encoder={{ .Values.logging.operator.format }}"
           - "--zap-time-encoding={{ .Values.logging.operator.timeEncoding }}"
-          {{- if .Values.prometheus.operator.enabled }}
-          - --metrics-bind-address=:{{ .Values.prometheus.operator.port }}
+          {{- if .Values.elasticsearch.operator.enabled }}
+          - --metrics-bind-address=:{{ .Values.elasticsearch.operator.port }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs.keda }}
           - --{{ $key }}={{ $value }}

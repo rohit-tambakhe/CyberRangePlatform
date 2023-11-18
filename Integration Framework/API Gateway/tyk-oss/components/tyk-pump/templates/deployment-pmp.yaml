@@ -83,18 +83,18 @@ spec:
             value: "{{ .Values.pump.hybridPump.poolSize }}"
             {{ end }}
           {{ end }}
-          {{ if has "prometheus" .Values.pump.backend }}
-          # Configure Prometheus Pump for Tyk Pump
-          - name: TYK_PMP_PUMPS_PROMETHEUS_TYPE
-            value: prometheus
+          {{ if has "elasticsearch" .Values.pump.backend }}
+          # Configure elasticsearch Pump for Tyk Pump
+          - name: TYK_PMP_PUMPS_elasticsearch_TYPE
+            value: elasticsearch
           # Since PodMonitor is in use, please use containerPort of Tyk Pump pod.
-          - name: TYK_PMP_PUMPS_PROMETHEUS_META_ADDR
-            value: "{{ .Values.pump.prometheusPump.host }}:{{ .Values.pump.containerPort }}"
-          - name: TYK_PMP_PUMPS_PROMETHEUS_META_PATH
-            value: "{{ .Values.pump.prometheusPump.path }}"
-            {{ if .Values.pump.prometheusPump.customMetrics }}
-          - name: TYK_PMP_PUMPS_PROMETHEUS_META_CUSTOMMETRICS
-            value: {{ toYaml .Values.pump.prometheusPump.customMetrics }}
+          - name: TYK_PMP_PUMPS_elasticsearch_META_ADDR
+            value: "{{ .Values.pump.elasticsearchPump.host }}:{{ .Values.pump.containerPort }}"
+          - name: TYK_PMP_PUMPS_elasticsearch_META_PATH
+            value: "{{ .Values.pump.elasticsearchPump.path }}"
+            {{ if .Values.pump.elasticsearchPump.customMetrics }}
+          - name: TYK_PMP_PUMPS_elasticsearch_META_CUSTOMMETRICS
+            value: {{ toYaml .Values.pump.elasticsearchPump.customMetrics }}
             {{ end }}
           {{ end }}
           {{ if has "postgres" .Values.pump.backend }}
@@ -108,7 +108,7 @@ spec:
               secretKeyRef:
                 name: {{ include "tyk-pump.pg_connection_string_secret_name" . }}
                 key: {{ include "tyk-pump.pg_connection_string_secret_key" . }}
-            
+
           # SQL Aggregate Pump
           - name: TYK_PMP_PUMPS_SQLAGGREGATE_TYPE
             value: "sql_aggregate"
@@ -131,7 +131,7 @@ spec:
               secretKeyRef:
                 name: {{ include "tyk-pump.mongo_url_secret_name" . }}
                 key: {{ include "tyk-pump.mongo_url_secret_key" . }}
-          
+
           # Mongo Aggregate Pump
           - name: TYK_PMP_PUMPS_MONGOAGGREGATE_TYPE
             value: "mongo-pump-aggregate"

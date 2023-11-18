@@ -13,10 +13,10 @@
 #    kind: Deployment
 #    name: gateway-{{ include "tyk-gateway.fullname" . }}
 #  triggers:
-#    - type: prometheus
+#    - type: elasticsearch
 #      metadata:
 #      # Required
-#        serverAddress: https://prometheus.int.tam-range.com
+#        serverAddress: https://elasticsearch.int.tam-range.com
 #        metricName: tyk_http_requests_total
 #        query: sum(rate(tyk_http_requests_total[1m]))
 #        threshold: "75"

@@ -6,7 +6,7 @@ controller:
   service:
     type: ClusterIP
   podAnnotations:
-    prometheus.io/path: /metrics
-    prometheus.io/port: "10254"
-    prometheus.io/scheme: http
-    prometheus.io/scrape: "true"
+    elasticsearch.io/path: /metrics
+    elasticsearch.io/port: "10254"
+    elasticsearch.io/scheme: http
+    elasticsearch.io/scrape: "true"

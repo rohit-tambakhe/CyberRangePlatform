@@ -156,16 +156,16 @@ pump:
     # annotations specifies annotations to be added Tyk Pump service.
     annotations: {}
 
-  # containerPort represents the port where Tyk Pump serve the metrics, for instance metrics for Prometheus.
+  # containerPort represents the port where Tyk Pump serve the metrics, for instance metrics for elasticsearch.
   # The default port is 9090.
   containerPort: 9090
 
   # backend defines the pumps to be created by default, as an array of string.
-  # Supported backends are ["mongo", "postgres", "prometheus","hybrid"]
+  # Supported backends are ["mongo", "postgres", "elasticsearch","hybrid"]
   # If you would like to use other backends such as ElasticSearch, please
   # configure the backend via environment variables.
   backend:
-    - "prometheus"
+    - "elasticsearch"
 
   # uptimePumpBackend configures uptime Tyk Pump. ["", "mongo", "postgres"].
   # Set it to "" for disabling uptime Tyk Pump. By default, uptime pump is disabled.
@@ -173,7 +173,7 @@ pump:
 
   # hybridPump configures Tyk Pump to forward Tyk metrics to a Tyk Control Plane.
   # Please add "hybrid" to .Values.pump.backend in order to enable Hybrid Pump.
-  hybridPump: 
+  hybridPump:
     # Specify the frequency of the aggregation in minutes or simply turn it on by setting it to true
     enableAggregateAnalytics: true
     # Hybrid pump RPC calls timeout in seconds. If not specified, default value will be picked up by Tyk Pump.
@@ -181,37 +181,37 @@ pump:
     # Hybrid pump connection pool size. If not specified, default value will be picked up by Tyk Pump.
     poolSize: 5
 
-  # prometheusPump configures Tyk Pump to expose Prometheus metrics.
-  # Please add "prometheus" to .Values.pump.backend in order to enable Prometheus Pump.
-  # The container port where Tyk Pump serves the metrics to Prometheus can be configured
+  # elasticsearchPump configures Tyk Pump to expose elasticsearch metrics.
+  # Please add "elasticsearch" to .Values.pump.backend in order to enable elasticsearch Pump.
+  # The container port where Tyk Pump serves the metrics to elasticsearch can be configured
   # via .pump.containerPort field.
-  prometheusPump:
-    # host represents the host without port, where Tyk Pump serve the metrics for Prometheus.
+  elasticsearchPump:
+    # host represents the host without port, where Tyk Pump serve the metrics for elasticsearch.
     host: ""
-    # path represents the path to the Prometheus collection. For example /metrics.
+    # path represents the path to the elasticsearch collection. For example /metrics.
     path: /metrics
-    # customMetrics allows defining custom Prometheus metrics for Tyk Pump.
+    # customMetrics allows defining custom elasticsearch metrics for Tyk Pump.
     # It accepts a string that represents a JSON object. For instance,
     #
     # customMetrics: '[{"name":"tyk_http_requests_total","description":"Total of API requests","metric_type":"counter","labels":["response_code","api_name","method","api_key","alias","path"]},          {              "name":"tyk_http_latency",              "description":"Latency of API requests",              "metric_type":"histogram",              "labels":["type","response_code","api_name","method","api_key","alias","path"]          }]'
     customMetrics: ""
-    # If you are using prometheus Operator, set the fields in the section below.
-    prometheusOperator:
-      # enabled determines whether the Prometheus Operator is in use or not. By default,
+    # If you are using elasticsearch Operator, set the fields in the section below.
+    elasticsearchOperator:
+      # enabled determines whether the elasticsearch Operator is in use or not. By default,
       # it is disabled.
-      # Tyk Pump can be monitored with PodMonitor Custom Resource of Prometheus Operator.
-      # If enabled, PodMonitor resource is created based on .Values.pump.prometheusPump.prometheusOperator.podMonitorSelector
+      # Tyk Pump can be monitored with PodMonitor Custom Resource of elasticsearch Operator.
+      # If enabled, PodMonitor resource is created based on .Values.pump.elasticsearchPump.elasticsearchOperator.podMonitorSelector
       # for Tyk Pump.
       enabled: false
-      # podMonitorSelector represents a podMonitorSelector of your Prometheus resource. So that
-      # your Prometheus resource can select PodMonitor objects based on selector defined here.
+      # podMonitorSelector represents a podMonitorSelector of your elasticsearch resource. So that
+      # your elasticsearch resource can select PodMonitor objects based on selector defined here.
       # Please set this field to the podMonitorSelector field of your monitoring.coreos.com/v1
-      # Prometheus resource's spec.
+      # elasticsearch resource's spec.
       #
       # You can check the podMonitorSelector via:
-      #   kubectl describe prometheuses.monitoring.coreos.com <PROMETHEUS_POD>
+      #   kubectl describe elasticsearches.monitoring.coreos.com <elasticsearch_POD>
       podMonitorSelector:
-        release: prometheus-stack
+        release: elasticsearch-stack
 
   # We usually recommend not to specify default resources and to leave this
   # as a conscious choice for the user. This also increases chances charts
@@ -225,8 +225,8 @@ pump:
   #  cpu: 100m
   #  memory: 128Mi
   resources: {}
-    
-  # securityContext values for pump pod 
+
+  # securityContext values for pump pod
   securityContext:
     runAsUser: 1000
     fsGroup: 2000

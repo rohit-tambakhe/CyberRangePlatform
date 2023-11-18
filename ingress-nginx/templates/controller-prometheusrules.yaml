@@ -1,21 +1,21 @@
-{{- if and .Values.controller.metrics.enabled .Values.controller.metrics.prometheusRule.enabled -}}
+{{- if and .Values.controller.metrics.enabled .Values.controller.metrics.elasticsearchRule.enabled -}}
 apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
+kind: elasticsearchRule
 metadata:
   name: {{ include "ingress-nginx.controller.fullname" . }}
-{{- if .Values.controller.metrics.prometheusRule.namespace }}
-  namespace: {{ .Values.controller.metrics.prometheusRule.namespace | quote }}
+{{- if .Values.controller.metrics.elasticsearchRule.namespace }}
+  namespace: {{ .Values.controller.metrics.elasticsearchRule.namespace | quote }}
 {{- end }}
   labels:
     {{- include "ingress-nginx.labels" . | nindent 4 }}
     app.kubernetes.io/component: controller
-  {{- if .Values.controller.metrics.prometheusRule.additionalLabels }}
-    {{- toYaml .Values.controller.metrics.prometheusRule.additionalLabels | nindent 4 }}
+  {{- if .Values.controller.metrics.elasticsearchRule.additionalLabels }}
+    {{- toYaml .Values.controller.metrics.elasticsearchRule.additionalLabels | nindent 4 }}
   {{- end }}
 spec:
-{{- if .Values.controller.metrics.prometheusRule.rules }}
+{{- if .Values.controller.metrics.elasticsearchRule.rules }}
   groups:
   - name: {{ template "ingress-nginx.name" . }}
-    rules: {{- toYaml .Values.controller.metrics.prometheusRule.rules | nindent 4 }}
+    rules: {{- toYaml .Values.controller.metrics.elasticsearchRule.rules | nindent 4 }}
 {{- end }}
 {{- end }}

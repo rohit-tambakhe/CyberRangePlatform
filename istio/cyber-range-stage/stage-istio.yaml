@@ -7734,7 +7734,7 @@ data:
       tracing:
         zipkin:
           address: zipkin.istio-system:9411
-    enablePrometheusMerge: true
+    enableelasticsearchMerge: true
     rootNamespace: istio-system
     trustDomain: cluster.local
 ---
@@ -9176,9 +9176,9 @@ spec:
         operator.istio.io/component: "IngressGateways"
         sidecar.istio.io/inject: "false"
       annotations:
-        prometheus.io/port: "15020"
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/stats/prometheus"
+        elasticsearch.io/port: "15020"
+        elasticsearch.io/scrape: "true"
+        elasticsearch.io/path: "/stats/elasticsearch"
         sidecar.istio.io/inject: "false"
     spec:
       securityContext:
@@ -9383,8 +9383,8 @@ spec:
         operator.istio.io/component: "Pilot"
         istio: pilot
       annotations:
-        prometheus.io/port: "15014"
-        prometheus.io/scrape: "true"
+        elasticsearch.io/port: "15014"
+        elasticsearch.io/scrape: "true"
         sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: istiod
@@ -9753,7 +9753,7 @@ spec:
       targetPort: 15017
       protocol: TCP
     - port: 15014
-      name: http-monitoring # prometheus stats
+      name: http-monitoring # elasticsearch stats
       protocol: TCP
   selector:
     app: istiod

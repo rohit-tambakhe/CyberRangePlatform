@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 import pandas as pd
 from flask import Flask, request, jsonify
-from prometheus_client import start_http_server, Summary, Counter, Gauge
+from elasticsearch_client import start_http_server, Summary, Counter, Gauge
 from sklearn import metrics
 from sklearn.cluster import KMeans
 import asyncio
@@ -18,7 +18,7 @@ app = Flask(__name__)
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-# Prometheus metrics
+# elasticsearch metrics
 REQUEST_TIME = Summary('request_processing_seconds',
                        'Time spent processing request')
 REQUEST_COUNTER = Counter('requests_total', 'Total requests')
@@ -166,7 +166,7 @@ def analyze_data():
 
 
 if __name__ == '__main__':
-    # Start Prometheus server for metrics
+    # Start elasticsearch server for metrics
     start_http_server(8000)
 
     # Initialize and set up the database

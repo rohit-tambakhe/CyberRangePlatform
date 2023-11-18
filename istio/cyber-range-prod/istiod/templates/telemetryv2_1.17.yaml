@@ -1,7 +1,7 @@
 {{- if and .Values.telemetry.enabled .Values.telemetry.v2.enabled }}
 ---
 # Note: http stats filter is wasm enabled only in sidecars.
-{{- if .Values.telemetry.v2.prometheus.enabled }}
+{{- if .Values.telemetry.v2.elasticsearch.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -35,10 +35,10 @@ spec:
             "@type": type.googleapis.com/udpa.type.v1.TypedStruct
             type_url: type.googleapis.com/stats.PluginConfig
             value:
-              {{- if not .Values.telemetry.v2.prometheus.configOverride.outboundSidecar }}
+              {{- if not .Values.telemetry.v2.elasticsearch.configOverride.outboundSidecar }}
               {}
               {{- else }}
-              {{ toJson .Values.telemetry.v2.prometheus.configOverride.outboundSidecar | indent 18 }}
+              {{ toJson .Values.telemetry.v2.elasticsearch.configOverride.outboundSidecar | indent 18 }}
               {{- end }}
     - applyTo: HTTP_FILTER
       match:
@@ -59,12 +59,12 @@ spec:
             "@type": type.googleapis.com/udpa.type.v1.TypedStruct
             type_url: type.googleapis.com/stats.PluginConfig
             value:
-              {{- if not .Values.telemetry.v2.prometheus.configOverride.inboundSidecar }}
+              {{- if not .Values.telemetry.v2.elasticsearch.configOverride.inboundSidecar }}
               {
                 "disable_host_header_fallback": true
               }
               {{- else }}
-              {{ toJson .Values.telemetry.v2.prometheus.configOverride.inboundSidecar | indent 18 }}
+              {{ toJson .Values.telemetry.v2.elasticsearch.configOverride.inboundSidecar | indent 18 }}
               {{- end }}
     - applyTo: HTTP_FILTER
       match:
@@ -85,12 +85,12 @@ spec:
             "@type": type.googleapis.com/udpa.type.v1.TypedStruct
             type_url: type.googleapis.com/stats.PluginConfig
             value:
-              {{- if not .Values.telemetry.v2.prometheus.configOverride.gateway }}
+              {{- if not .Values.telemetry.v2.elasticsearch.configOverride.gateway }}
               {
                 "disable_host_header_fallback": true
               }
               {{- else }}
-              {{ toJson .Values.telemetry.v2.prometheus.configOverride.gateway | indent 18 }}
+              {{ toJson .Values.telemetry.v2.elasticsearch.configOverride.gateway | indent 18 }}
               {{- end }}
 ---
 # Note: tcp stats filter is wasm enabled only in sidecars.
@@ -125,10 +125,10 @@ spec:
             "@type": type.googleapis.com/udpa.type.v1.TypedStruct
             type_url: type.googleapis.com/stats.PluginConfig
             value:
-              {{- if not .Values.telemetry.v2.prometheus.configOverride.inboundSidecar }}
+              {{- if not .Values.telemetry.v2.elasticsearch.configOverride.inboundSidecar }}
               {}
               {{- else }}
-              {{ toJson .Values.telemetry.v2.prometheus.configOverride.inboundSidecar | indent 18 }}
+              {{ toJson .Values.telemetry.v2.elasticsearch.configOverride.inboundSidecar | indent 18 }}
               {{- end }}
     - applyTo: NETWORK_FILTER
       match:
@@ -147,10 +147,10 @@ spec:
             "@type": type.googleapis.com/udpa.type.v1.TypedStruct
             type_url: type.googleapis.com/stats.PluginConfig
             value:
-              {{- if not .Values.telemetry.v2.prometheus.configOverride.outboundSidecar }}
+              {{- if not .Values.telemetry.v2.elasticsearch.configOverride.outboundSidecar }}
               {}
               {{- else }}
-              {{ toJson .Values.telemetry.v2.prometheus.configOverride.outboundSidecar | indent 18 }}
+              {{ toJson .Values.telemetry.v2.elasticsearch.configOverride.outboundSidecar | indent 18 }}
               {{- end }}
     - applyTo: NETWORK_FILTER
       match:
@@ -169,10 +169,10 @@ spec:
             "@type": type.googleapis.com/udpa.type.v1.TypedStruct
             type_url: type.googleapis.com/stats.PluginConfig
             value:
-              {{- if not .Values.telemetry.v2.prometheus.configOverride.gateway }}
+              {{- if not .Values.telemetry.v2.elasticsearch.configOverride.gateway }}
               {}
               {{- else }}
-              {{ toJson .Values.telemetry.v2.prometheus.configOverride.gateway | indent 18 }}
+              {{ toJson .Values.telemetry.v2.elasticsearch.configOverride.gateway | indent 18 }}
               {{- end }}
 ---
 {{- end }}

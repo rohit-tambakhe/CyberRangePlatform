@@ -171,7 +171,7 @@ This file documents all notable changes to [ingress-nginx](https://github.com/ku
 - [X] [#6203](https://github.com/kubernetes/ingress-nginx/pull/6203) Refactor parsing of key values
 - [X] [#6162](https://github.com/kubernetes/ingress-nginx/pull/6162) Add helm chart options to expose metrics service as NodePort
 - [X] [#6180](https://github.com/kubernetes/ingress-nginx/pull/6180) Fix helm chart admissionReviewVersions regression
-- [X] [#6169](https://github.com/kubernetes/ingress-nginx/pull/6169) Fix Typo in example prometheus rules
+- [X] [#6169](https://github.com/kubernetes/ingress-nginx/pull/6169) Fix Typo in example elasticsearch rules
 
 ### 3.0.0
 
@@ -187,7 +187,7 @@ This file documents all notable changes to [ingress-nginx](https://github.com/ku
 
 ### 2.14.0
 
-- [X] [#6104](https://github.com/kubernetes/ingress-nginx/pull/6104) Misc fixes for nginx-ingress chart for better keel and prometheus-operator integration
+- [X] [#6104](https://github.com/kubernetes/ingress-nginx/pull/6104) Misc fixes for nginx-ingress chart for better keel and elasticsearch-operator integration
 
 ### 2.13.0
 

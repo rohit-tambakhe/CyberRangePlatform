@@ -14,9 +14,9 @@ serviceAccount:
   name: ""
 
 podAnnotations:
-  prometheus.io/port: "15020"
-  prometheus.io/scrape: "true"
-  prometheus.io/path: "/stats/prometheus"
+  elasticsearch.io/port: "15020"
+  elasticsearch.io/scrape: "true"
+  elasticsearch.io/path: "/stats/elasticsearch"
   inject.istio.io/templates: "gateway"
   sidecar.istio.io/inject: "true"
 

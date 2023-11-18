@@ -11,10 +11,10 @@ spec:
   - name: metricsservice
     port: 9666
     targetPort: 9666
-  {{- if .Values.prometheus.operator.enabled }}
+  {{- if .Values.elasticsearch.operator.enabled }}
   - name: metrics
-    port: {{ .Values.prometheus.operator.port }}
-    targetPort: {{ .Values.prometheus.operator.port }}
+    port: {{ .Values.elasticsearch.operator.port }}
+    targetPort: {{ .Values.elasticsearch.operator.port }}
   {{- end }}
   selector:
     app: {{ .Values.operator.name }}

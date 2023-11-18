@@ -63,13 +63,13 @@
         "inject.istio.io/templates": {
           "type": "string"
         },
-        "prometheus.io/path": {
+        "elasticsearch.io/path": {
           "type": "string"
         },
-        "prometheus.io/port": {
+        "elasticsearch.io/port": {
           "type": "string"
         },
-        "prometheus.io/scrape": {
+        "elasticsearch.io/scrape": {
           "type": "string"
         }
       }

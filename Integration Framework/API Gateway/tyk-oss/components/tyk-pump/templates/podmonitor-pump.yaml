@@ -1,11 +1,11 @@
-{{ if has "prometheus" .Values.pump.backend }}
-{{ if .Values.pump.prometheusPump.prometheusOperator.enabled }}
+{{ if has "elasticsearch" .Values.pump.backend }}
+{{ if .Values.pump.elasticsearchPump.elasticsearchOperator.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: tyk-pump-podmonitor-{{ include "tyk-pump.fullname" . }}
   labels:
-    {{- range $key, $value := .Values.pump.prometheusPump.prometheusOperator.podMonitorSelector }}
+    {{- range $key, $value := .Values.pump.elasticsearchPump.elasticsearchOperator.podMonitorSelector }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:

@@ -37,10 +37,10 @@ spec:
         {{- if .Values.additionalAnnotations }}
         {{- toYaml .Values.additionalAnnotations | nindent 8 }}
         {{- end }}
-        {{- if and .Values.prometheus.metricServer.enabled ( not .Values.prometheus.metricServer.podMonitor.enabled ) }}
-        prometheus.io/scrape: "true"
-        prometheus.io/port: {{ .Values.prometheus.metricServer.port | quote }}
-        prometheus.io/path: {{ .Values.prometheus.metricServer.path }}
+        {{- if and .Values.elasticsearch.metricServer.enabled ( not .Values.elasticsearch.metricServer.podMonitor.enabled ) }}
+        elasticsearch.io/scrape: "true"
+        elasticsearch.io/port: {{ .Values.elasticsearch.metricServer.port | quote }}
+        elasticsearch.io/path: {{ .Values.elasticsearch.metricServer.path }}
         {{- end }}
         {{- if .Values.podAnnotations.metricsAdapter }}
         {{- toYaml .Values.podAnnotations.metricsAdapter | nindent 8}}
@@ -107,9 +107,9 @@ spec:
           - --secure-port={{ .Values.service.portHttpsTarget }}
           - --logtostderr=true
           - --metrics-service-address={{ .Values.operator.name }}.{{ .Release.Namespace }}.svc.cluster.local:9666
-          {{- if .Values.prometheus.metricServer.enabled }}
-          - --metrics-port={{ .Values.prometheus.metricServer.port }}
-          - --metrics-path={{ .Values.prometheus.metricServer.path }}
+          {{- if .Values.elasticsearch.metricServer.enabled }}
+          - --metrics-port={{ .Values.elasticsearch.metricServer.port }}
+          - --metrics-path={{ .Values.elasticsearch.metricServer.path }}
           {{- end }}
           - --v={{ .Values.logging.metricServer.level }}
           {{- range $key, $value := .Values.extraArgs.metricsAdapter }}
@@ -122,8 +122,8 @@ spec:
             - containerPort: {{ .Values.service.portHttpTarget }}
               name: http
               protocol: TCP
-            {{- if .Values.prometheus.metricServer.enabled }}
-            - containerPort: {{ .Values.prometheus.metricServer.port }}
+            {{- if .Values.elasticsearch.metricServer.enabled }}
+            - containerPort: {{ .Values.elasticsearch.metricServer.port }}
               name: metrics
               protocol: TCP
             {{- end }}

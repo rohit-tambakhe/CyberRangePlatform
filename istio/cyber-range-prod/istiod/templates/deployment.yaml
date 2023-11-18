@@ -48,9 +48,9 @@ spec:
         {{ $key }}: "{{ $val }}"
         {{- end }}
       annotations:
-        {{- if .Values.meshConfig.enablePrometheusMerge }}
-        prometheus.io/port: "15014"
-        prometheus.io/scrape: "true"
+        {{- if .Values.meshConfig.enableelasticsearchMerge }}
+        elasticsearch.io/port: "15014"
+        elasticsearch.io/scrape: "true"
         {{- end }}
         sidecar.istio.io/inject: "false"
         {{- if .Values.pilot.podAnnotations }}

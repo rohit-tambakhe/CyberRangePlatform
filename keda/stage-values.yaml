@@ -216,14 +216,14 @@ volumes:
     extraVolumes: []
     extraVolumeMounts: []
 
-prometheus:
+elasticsearch:
   metricServer:
     enabled: false
     port: 9022
     portName: metrics
     path: /metrics
     podMonitor:
-      # Enables PodMonitor creation for the Prometheus Operator
+      # Enables PodMonitor creation for the elasticsearch Operator
       enabled: false
       interval:
       scrapeTimeout:
@@ -234,15 +234,15 @@ prometheus:
     enabled: false
     port: 8080
     podMonitor:
-      # Enables PodMonitor creation for the Prometheus Operator
+      # Enables PodMonitor creation for the elasticsearch Operator
       enabled: false
       interval:
       scrapeTimeout:
       namespace:
       additionalLabels: {}
       relabelings: []
-    prometheusRules:
-      # Enables PrometheusRules creation for the Prometheus Operator
+    elasticsearchRules:
+      # Enables elasticsearchRules creation for the elasticsearch Operator
       enabled: false
       namespace:
       additionalLabels: {}

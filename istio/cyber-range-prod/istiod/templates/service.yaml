@@ -27,7 +27,7 @@ spec:
       targetPort: 15017
       protocol: TCP
     - port: 15014
-      name: http-monitoring # prometheus stats
+      name: http-monitoring # elasticsearch stats
       protocol: TCP
   selector:
     app: istiod

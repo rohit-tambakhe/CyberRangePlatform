@@ -56,24 +56,24 @@ helm show values tyk-helm/tyk-pump > values.yaml --devel
 You can update any value in your local values.yaml file and use `-f [filename]` flag to override default values during installation. Alternatively, you can use `--set` flag to set it in Tyk installation.
 
 ### Set Redis connection details (Required)
-Redis is Tyk Pump's primary database where it scrapes Tyk Gateway analytics from. 
+Redis is Tyk Pump's primary database where it scrapes Tyk Gateway analytics from.
 You may set `global.redis.addr` and `global.redis.pass` with redis connection string and password for Tyk Gateway respectively.
 
 ### Pump Configurations
 
 | Pump                      | Configuration                                                                                              |
-|---------------------------|------------------------------------------------------------------------------------------------------------| 
-| Prometheus Pump (Default) | Add `prometheus` to `pump.backend`, and add connection details for prometheus under `pump.prometheusPump`. |
+|---------------------------|------------------------------------------------------------------------------------------------------------|
+| elasticsearch Pump (Default) | Add `elasticsearch` to `pump.backend`, and add connection details for elasticsearch under `pump.elasticsearchPump`. |
 | Mongo Pump                | Add `mongo` to `pump.backend`, and add connection details for mongo under `.global.mongo`.                 |
 | SQL Pump                  | Add `postgres` to `.pump.backend`, and add connection details for postgres under `.global.postgres`.       |
 | Uptime Pump               | Set `pump.uptimePumpBackend` to `'mongo'` or `'postgres'` or `''`                                          |
 | Hybrid Pump               | Add `hybrid` to `.pump.backend`, and setup `.global.remoteControlPlane` section with the required adresses and tokens           |
 | Other Pumps               | Add the required environment variables in `pump.extraEnvs`                                                 |
 
-#### Prometheus Pump
-Add `prometheus` to `pump.backend`, and add connection details for prometheus under `pump.prometheusPump`. 
+#### elasticsearch Pump
+Add `elasticsearch` to `pump.backend`, and add connection details for elasticsearch under `pump.elasticsearchPump`.
 
-We also support monitoring using Prometheus Operator. All you have to do is set `pump.prometheusPump.prometheusOperator.enabled` to true.
+We also support monitoring using elasticsearch Operator. All you have to do is set `pump.elasticsearchPump.elasticsearchOperator.enabled` to true.
 This will create a PodMonitor resource for your Pump instance.
 
 #### Mongo Pump
@@ -95,7 +95,7 @@ NOTE: [Here is](https://tyk.io/docs/planning-for-production/database-settings/) 
 Add following under the `global` section in `values.yaml`:
 
 ```yaml
-   # Set mongo connection details if you want to configure mongo pump.     
+   # Set mongo connection details if you want to configure mongo pump.
    mongo:
       # The mongoURL value will allow you to set your MongoDB address.
       # Default value: mongodb://mongo.{{ .Release.Namespace }}.svc.cluster.local:27017/tyk_analytics
@@ -162,7 +162,7 @@ Uptime Pump can be configured by setting `pump.uptimePumpBackend` in values.yaml
 ```yaml
   # hybridPump configures Tyk Pump to forward Tyk metrics to a Tyk Control Plane.
   # Please add "hybrid" to .Values.pump.backend in order to enable Hybrid Pump.
-  hybridPump: 
+  hybridPump:
     # Specify the frequency of the aggregation in minutes or simply turn it on by setting it to true
     enableAggregateAnalytics: true
     # Hybrid pump RPC calls timeout in seconds. If not specified, default value will be picked up by Tyk Pump.

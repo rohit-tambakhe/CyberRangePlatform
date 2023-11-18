@@ -1,6 +1,6 @@
-{{- if and .Values.prometheus.operator.enabled .Values.prometheus.operator.prometheusRules.enabled }}
+{{- if and .Values.elasticsearch.operator.enabled .Values.elasticsearch.operator.elasticsearchRules.enabled }}
 apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
+kind: elasticsearchRule
 metadata:
   name: {{ .Values.operator.name }}
   annotations:
@@ -8,15 +8,15 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ .Values.operator.name }}
     {{- include "keda.labels" . | indent 4 }}
-    {{- range $key, $value := .Values.prometheus.operator.prometheusRules.additionalLabels }}
+    {{- range $key, $value := .Values.elasticsearch.operator.elasticsearchRules.additionalLabels }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
-  {{- with .Values.prometheus.operator.prometheusRules.namespace }}
+  {{- with .Values.elasticsearch.operator.elasticsearchRules.namespace }}
   namespace: {{ . }}
   {{- end }}
 spec:
   groups:
   - name: {{ .Values.operator.name }}
     rules:
-{{ toYaml .Values.prometheus.operator.prometheusRules.alerts | indent 6 }}
+{{ toYaml .Values.elasticsearch.operator.elasticsearchRules.alerts | indent 6 }}
 {{- end }}
