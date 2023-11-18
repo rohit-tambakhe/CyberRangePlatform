@@ -2,9 +2,6 @@
   "apiVersion": "v1",
   "kind": "Namespace",
   "metadata": {
-    "name": "owncloud-stage",
-    "labels": {
-      "owner": "SRE"
-    }
+    "name": "cr-tamrange-stage"
   }
 }

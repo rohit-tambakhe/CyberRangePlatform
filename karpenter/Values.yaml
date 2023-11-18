@@ -146,7 +146,7 @@ logLevel: debug
 # -- Gloabl log encoding
 logEncoding: console
 # -- Cluster name.
-clusterName: "tam-range-sre"
+clusterName: "tam-range"
 # -- Cluster endpoint.
 clusterEndpoint: "https://openstack-k8s-cluster.tam-range.com:6443"
 aws:
