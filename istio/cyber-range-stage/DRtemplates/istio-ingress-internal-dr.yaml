@@ -12,10 +12,9 @@ metadata:
     octavia.ingress.kubernetes.io/healthcheck-path: /healthz/ready
     octavia.ingress.kubernetes.io/healthcheck-port: "30400"
     octavia.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    octavia.ingress.kubernetes.io/inbound-cidrs: 10.20.0.0/16, 10.250.0.0/16, 10.35.0.0/16, 10.44.0.0/16
+    octavia.ingress.kubernetes.io/inbound-cidrs: 10.20.0.0/16
     octavia.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     octavia.ingress.kubernetes.io/scheme: internal
-    octavia.ingress.kubernetes.io/subnets: subnet-042b219e44cf0f5d7, subnet-072c6e7af8397a3ef, subnet-04a917138a60ec9e6
   name: tam-range-stage-istio-ingress-internal
   namespace: istio-system
 spec:
