@@ -1,0 +1,78 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: istio-ingressgateway-policy
+  namespace: istio-system
+spec:
+  endpointSelector:
+    matchLabels:
+      app: istio-ingressgateway
+      environment: blue  # Default traffic goes to the blue environment
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: istio-system
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+          rules:
+            http:
+              - method: "GET"
+                path: "/*"
+    - fromCIDR:
+        - 10.20.0.0/16
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: istio-system
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+    - endpointSelector:
+        matchLabels:
+          app: istio-ingressgateway
+          environment: green
+      ingress:
+        - fromEndpoints:
+            - matchLabels:
+                k8s:io.kubernetes.pod.namespace: istio-system
+          toPorts:
+            - ports:
+                - port: "80"
+                  protocol: TCP
+                - port: "443"
+                  protocol: TCP
+              rules:
+                http:
+                  - method: "GET"
+                    path: "/*"
+        - fromCIDR:
+            - 10.20.0.0/16
+          toPorts:
+            - ports:
+                - port: "80"
+                  protocol: TCP
+                - port: "443"
+                  protocol: TCP
+      egress:
+        - toEndpoints:
+            - matchLabels:
+                k8s:io.kubernetes.pod.namespace: istio-system
+          toPorts:
+            - ports:
+                - port: "80"
+                  protocol: TCP
+                - port: "443"
+                  protocol: TCP
